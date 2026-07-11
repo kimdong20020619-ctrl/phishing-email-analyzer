@@ -1,0 +1,16 @@
+[project]
+name = "phishing-email-analyzer"
+version = "0.1.0"
+description = "피싱 이메일(.eml) 오프라인 트리아지 분석기 (방어용)"
+requires-python = ">=3.10"
+dependencies = []  # 표준 라이브러리만 사용
+
+[project.scripts]
+phishing-analyzer = "phishing_analyzer.__main__:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

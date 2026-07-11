@@ -1,0 +1,27 @@
+From: "security@paypal.com" <alerts@paypa1-secure.example>
+Reply-To: collect@mailbox.evil.example
+To: victim@example.com
+Subject: [Action Required] Your account has been limited
+Date: Mon, 06 Jul 2026 09:15:00 +0000
+Authentication-Results: mx.example.com; spf=fail smtp.mailfrom=paypa1-secure.example; dkim=none; dmarc=fail
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="BOUNDARY123"
+
+--BOUNDARY123
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+<html><body>
+<p>Dear customer, your account was limited. Verify now:</p>
+<p><a href="http://192.168.10.44/paypal/login">https://www.paypal.com/login</a></p>
+<p>Backup link: http://bit.ly/verify-now</p>
+</body></html>
+
+--BOUNDARY123
+Content-Type: application/octet-stream; name="invoice.pdf.exe"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="invoice.pdf.exe"
+
+VGhpcyBpcyBub3QgYSByZWFsIGV4ZWN1dGFibGUuIFRlc3QgZml4dHVyZSBvbmx5Lg==
+
+--BOUNDARY123--
