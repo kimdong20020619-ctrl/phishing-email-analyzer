@@ -1,5 +1,9 @@
 # Phishing Email Analyzer
 
+![CI](https://github.com/kimdong20020619-ctrl/phishing-email-analyzer/actions/workflows/ci.yml/badge.svg)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 피싱 이메일(`.eml`)을 **오프라인으로 트리아지**하는 방어용 분석 도구.
 SOC 분석가·침해대응(DFIR) 관점에서 이메일의 위험 지표를 자동 추출하고 위험 점수를 매긴다.
 
