@@ -53,6 +53,40 @@ From      : security@paypal.com <alerts@paypa1-secure.example>
   - 위험 첨부: invoice.pdf.exe
 ```
 
+## 동작 원리
+
+```
+.eml 파일
+   │  email.parser (stdlib, policy.default)
+   ▼
+헤더/본문/첨부 파싱
+   │
+   ├─▶ indicators: From·Reply-To 불일치 / 표시이름 스푸핑
+   ├─▶ indicators: SPF·DKIM·DMARC 파싱
+   ├─▶ indicators: URL 플래그(IP·punycode·단축·앵커 불일치)
+   └─▶ indicators: 첨부 SHA256·위험/이중 확장자·매크로
+   ▼
+가중 합산 → 위험 점수(0~100) → 판정
+   ▼
+report: 텍스트 / JSON  (+선택적 VirusTotal 인리치먼트)
+```
+
+**위험 점수 가중치** (합산 후 60↑ malicious, 30↑ suspicious):
+
+| 지표 | 가중치 | 지표 | 가중치 |
+|------|:---:|------|:---:|
+| 위험 첨부 | 40 | 표시이름 스푸핑 | 30 |
+| From/Reply-To 불일치 | 20 | DMARC 실패 | 20 |
+| 앵커 불일치 | 20 | 매크로 첨부 | 20 |
+| SPF 실패 | 15 | 의심 URL | 15 |
+| DKIM 실패 | 10 | | |
+
+## 설계 노트 & 한계
+
+- **오프라인 우선**: 기본은 네트워크 호출 없이 로컬 분석만 한다. 분석 대상 메일을 외부로 노출하지 않기 위함이다. VirusTotal은 `--vt`로 명시할 때만, 키가 있을 때만 동작한다.
+- **가중 합산 방식**: 단일 지표로 단정하지 않고 여러 지표를 합산해 오탐을 줄였다. 임계값은 `analyzer.py`의 `_WEIGHTS`에서 조정한다.
+- **한계**: 규칙 기반이라 정교한 표적 피싱(정상 도메인 탈취·이미지 기반 본문)은 놓칠 수 있다. 실제 운영은 SEG(Secure Email Gateway)·샌드박스와 **다층**으로 결합해야 한다.
+
 ## 구조
 
 ```
@@ -60,6 +94,7 @@ src/phishing_analyzer/
 ├── analyzer.py     # 이메일 파싱 + 지표 종합 + 점수
 ├── indicators.py   # 헤더/URL/첨부 판정 로직
 ├── report.py       # 텍스트/JSON 리포트
+├── enrichment.py   # VirusTotal 선택적 조회
 └── __main__.py     # CLI
 samples/            # 테스트용 합성 샘플
 tests/              # unittest (외부 의존성 없음)
